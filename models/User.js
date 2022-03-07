@@ -8,6 +8,7 @@ const userSchema = schema({
     unique: true,
   },
   password:String,
+  googleId:String,
   datteCreation:{
       type:Date,
       default:Date.now()

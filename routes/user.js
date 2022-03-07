@@ -4,18 +4,21 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const isAuth = require("../middleware/isAuth");
-
-//@role: testing
-//@url: http://localhost:5000/api/user/test
-router.get("/test", (req, res) => {
-  res.send("it works ..");
-});
+var GoogleSignIn = require("google-sign-in");
+const { GoogleAuth } = require("google-auth-library");
+var project = new GoogleSignIn.Project(
+  "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.apps.googleusercontent.com"
+);
 
 //@role: register
 //@url: http://localhost:5000/api/user/register
 //@public
 router.post("/register", async (req, res) => {
+  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
   try {
+    //read the google id from the front
+
+    const { idToken } = req.body;
     //read the payload data from the user
     const { name, email, password } = req.body;
     //step1: create the user
@@ -90,18 +93,15 @@ router.get("/authUser", isAuth, (req, res) => {
   }
 });
 
-
-//@role: get all the user 
+//@role: get all the user
 //@url: http://localhost:5000/api/user/all
-router.get('/all',async(req,res)=>{
-    try {
-        const users= await User.find()
-        res.send(users)
-
-    } catch (error) {
-        res.status(500).json({ msg: "catch", msg: error.message });
-
-    }
-})
+router.get("/all", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.send(users);
+  } catch (error) {
+    res.status(500).json({ msg: "catch", msg: error.message });
+  }
+});
 
 module.exports = router;
